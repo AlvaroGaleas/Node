@@ -52,4 +52,17 @@ export class UsuarioController {
         if (!exito) return res.status(404).json({ error: 'No encontrado' });
         res.status(204).send();
     }
+    login = async (req, res) => {
+        try {
+            const { cedula, password } = req.body;
+            
+            // Llamamos al servicio
+            const resultado = await this.usuarioService.login(cedula, password);
+            
+            res.status(200).json(resultado);
+        } catch (error) {
+            // Devolvemos 401 (Unauthorized) si falla
+            res.status(401).json({ error: error.message });
+        }
+    }
 }

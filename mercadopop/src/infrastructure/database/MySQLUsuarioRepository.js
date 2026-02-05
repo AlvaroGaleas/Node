@@ -8,18 +8,26 @@ export class MySQLUsuarioRepository {
     _toDomain(modeloSequelize) {
         if (!modeloSequelize) return null;
         const data = modeloSequelize.toJSON();
-        return new Usuario(data.id, data.nombreCompleto, data.cedula, data.rol, data.password);
+        return new Usuario(
+            data.id,
+            data.nombreCompleto,
+            data.cedula,
+            data.rol,
+            data.password, // <--- ¡AQUÍ ESTÁ LA CLAVE! (5to lugar)
+            data.estado    // (6to lugar - opcional)
+        );
     }
 
     async save(usuario) {
         const passwordHash = usuario.password ? await bcrypt.hash(usuario.password, 10) : null;
 
         // Sequelize: .create() reemplaza al INSERT INTO...
-        const nuevoUsuario = await UsuarioModel.create({
+        const nuevo = await UsuarioModel.create({
             nombreCompleto: usuario.nombreCompleto,
             cedula: usuario.cedula,
             rol: usuario.rol,
-            password: passwordHash
+            password: usuario.password, // <--- ¡AGREGA ESTA LÍNEA! ✅
+            estado: usuario.estado      // (Opcional, si usas estado)
         });
 
         return this._toDomain(nuevoUsuario);

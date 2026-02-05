@@ -46,20 +46,24 @@ export class MySQLSuscripcionRepository {
         return this._toDomain(sub);
     }
 
-    async findActiveByUserId(usuarioId) {
-        const sub = await SuscripcionModel.findOne({
-            where: {
-                usuarioId: usuarioId,
-                activa: true
-            }
-        });
-        return this._toDomain(sub);
-    }
+    
     async findActiveByUserId(usuarioId) {
     console.log('--- BUSCANDO SUSCRIPCIÓN ACTIVA ---'); // <--- Agrega esto
     const sub = await SuscripcionModel.findOne({
         where: { usuarioId: usuarioId, activa: true }
     });
     return this._toDomain(sub);
-}
+    }
+    async update(suscripcion) {
+        // Actualizamos en la BD los créditos usados y si sigue activa
+        await SuscripcionModel.update({
+            creditosUsados: suscripcion.creditosUsados,
+            activa: suscripcion.activa
+        }, {
+            where: { id: suscripcion.id }
+        });
+        
+        // Devolvemos la versión actualizada
+        return await this.findById(suscripcion.id);
+    }
 }

@@ -12,7 +12,7 @@ export function crearUsuarioRouter(usuarioController) {
             //REGLAS DE VALIDACIÓN
             body('nombreCompleto').notEmpty().withMessage('El nombre es obligatorio'),
             body('cedula').isLength({ min: 10 }).withMessage('La cédula debe tener al menos 10 caracteres'),
-            body('rol').isIn(['ADMIN', 'TITULAR', 'ARRENDATARIO']).withMessage('Rol inválido (Use: ADMIN, TITULAR o ARRENDATARIO)'),
+            body('rol').isIn(['ADMIN', 'TITULAR', 'ARRENDATARIO']).withMessage('Rol inválido (Use: ADMIN, TITULAR o ARRENDATARIO)'),            
             //EJECUTAR MIDDLEWARE
             validarCampos
         ],
@@ -21,6 +21,7 @@ export function crearUsuarioRouter(usuarioController) {
 
     router.get('/', usuarioController.listar);
     router.get('/:id', usuarioController.obtenerPorId);
+    router.post('/login', usuarioController.login);
 
     return router;
 }

@@ -50,7 +50,7 @@ export class SuscripcionService {
     }
     async realizarCheckIn(usuarioId) {
         // 1. Buscar suscripción activa
-        const suscripcion = await this.suscripcionRepository.findActiveByUsuarioId(usuarioId);
+        const suscripcion = await this.suscripcionRepository.findActiveByUserId(usuarioId);
         
         if (!suscripcion) {
             throw new Error('El usuario no tiene suscripciones activas. Debe comprar un Pack o Pase Diario.');
