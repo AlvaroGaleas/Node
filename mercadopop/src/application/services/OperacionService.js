@@ -1,10 +1,10 @@
 export class OperacionService {
     // Inyectamos suscripcionService para poder descontar créditos
-    constructor(puestoRepository, usuarioRepository, mongoOperacionRepository, suscripcionService) {
+    constructor(puestoRepository, mongoOperacionRepository, suscripcionService, usuarioRepository) {
         this.puestoRepository = puestoRepository;
-        this.usuarioRepository = usuarioRepository;
         this.mongoOperacionRepository = mongoOperacionRepository;
         this.suscripcionService = suscripcionService;
+        this.usuarioRepository = usuarioRepository; // 2. Lo guardamos en 'this'
     }
 
     async abrirMercado(fecha = new Date()) {

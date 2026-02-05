@@ -14,7 +14,7 @@ export class SuscripcionService {
         }
 
         // 2. Validar si ya tiene una suscripción activa (Opcional, pero recomendado)
-        const activa = await this.suscripcionRepository.findActiveByUsuarioId(usuarioId);
+        const activa = await this.suscripcionRepository.findActiveByUserId(usuarioId);
         if (activa) {
             throw new Error(`El usuario ya tiene una suscripción activa con ${activa.creditosTotales - activa.creditosUsados} créditos restantes.`);
         }

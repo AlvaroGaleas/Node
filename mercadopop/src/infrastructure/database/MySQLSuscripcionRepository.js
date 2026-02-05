@@ -55,4 +55,11 @@ export class MySQLSuscripcionRepository {
         });
         return this._toDomain(sub);
     }
+    async findActiveByUserId(usuarioId) {
+    console.log('--- BUSCANDO SUSCRIPCIÓN ACTIVA ---'); // <--- Agrega esto
+    const sub = await SuscripcionModel.findOne({
+        where: { usuarioId: usuarioId, activa: true }
+    });
+    return this._toDomain(sub);
+}
 }
