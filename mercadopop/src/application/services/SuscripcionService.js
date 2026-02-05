@@ -73,4 +73,7 @@ export class SuscripcionService {
             estadoSuscripcion: suscripcion.estado
         };
     }
+    async obtenerSuscripcionDeUsuario(usuarioId) {
+        return await this.suscripcionRepository.findByUsuarioId(usuarioId);
+    }
 }

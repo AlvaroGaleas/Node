@@ -21,6 +21,7 @@ export function crearSuscripcionRouter(suscripcionController) {
     // Rutas
     router.post('/check-in', suscripcionController.usarCredito);
     router.get('/usuario/:usuarioId', suscripcionController.consultarActiva);
+    router.get('/usuario/:usuarioId', suscripcionController.obtenerPorUsuario);
 
     return router;
 }

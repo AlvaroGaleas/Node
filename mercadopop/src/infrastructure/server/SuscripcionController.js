@@ -42,4 +42,19 @@ export class SuscripcionController {
             res.status(400).json({ error: error.message });
         }
     }
+    // Método para obtener la suscripción del usuario logueado
+    obtenerPorUsuario = async (req, res) => {
+        try {
+            const { usuarioId } = req.params;
+            const suscripcion = await this.suscripcionService.obtenerSuscripcionDeUsuario(usuarioId);
+            
+            if (!suscripcion) {
+                return res.status(404).json({ error: 'No tienes puestos asignados.' });
+            }
+            
+            res.json(suscripcion);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
 }

@@ -19,18 +19,17 @@ export class MySQLUsuarioRepository {
     }
 
     async save(usuario) {
-        const passwordHash = usuario.password ? await bcrypt.hash(usuario.password, 10) : null;
-
-        // Sequelize: .create() reemplaza al INSERT INTO...
-        const nuevo = await UsuarioModel.create({
+        
+        const nuevo = await UsuarioModel.create({  
             nombreCompleto: usuario.nombreCompleto,
             cedula: usuario.cedula,
             rol: usuario.rol,
-            password: usuario.password, // <--- ¡AGREGA ESTA LÍNEA! ✅
-            estado: usuario.estado      // (Opcional, si usas estado)
+            password: usuario.password, 
+            estado: usuario.estado      
         });
 
-        return this._toDomain(nuevoUsuario);
+        // Devolvemos 'nuevo', que es la variable que acabamos de crear
+        return this._toDomain(nuevo); 
     }
 
     async findById(id) {

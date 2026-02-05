@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Mi Puesto - MercadoPop</title>
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+</head>
+<body class="bg-gradient-primary">
+
+    <div class="container">
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-xl-6 col-lg-6 col-md-9">
+
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="p-5">
+                            
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-2">¡Hola, <span id="nombreUsuario">Usuario</span>!</h1>
+                                <p class="mb-4">Bienvenido a tu panel personal.</p>
+                            </div>
+
+                            <div class="card border-left-success shadow h-100 py-2 mb-4">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Créditos Disponibles</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="saldoDisplay">
+                                                Cargando...
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-coins fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button id="btnCheckIn" class="btn btn-primary btn-user btn-block btn-lg" style="height: 80px; font-size: 1.5rem;">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                MARCAR ASISTENCIA
+                            </button>
+                            
+                            <div id="mensajeResultado" class="mt-3 text-center font-weight-bold"></div>
+
+                            <hr>
+
+                            <div class="text-center">
+                                <a class="small text-danger" href="#" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    // Variables Globales
+    const token = localStorage.getItem('token');
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    let miPuestoId = null; // Aquí guardaremos el ID del puesto cuando lo encontremos
+    let miSuscripcionId = null;
+
+    // 1. Verificar Seguridad
+    if (!token || !usuario) {
+        window.location.href = 'login.html';
+    }
+
+    // 2. Mostrar Nombre
+    document.getElementById('nombreUsuario').innerText = usuario.nombre;
+
+    // 3. Función Logout
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    // 4. FUNCIÓN CLAVE: Cargar datos del Puesto al iniciar 🔑
+    async function cargarDatosPuesto() {
+        try {
+            const res = await fetch(`http://localhost:3000/api/suscripciones/usuario/${usuario.id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                // Guardamos los datos importantes en las variables globales
+                miPuestoId = data.puestoId;
+                miSuscripcionId = data.id;
+                
+                // Actualizamos la pantalla
+                document.getElementById('saldoDisplay').innerText = data.creditosRestantes + " Créditos";
+                
+                // Habilitamos el botón (podríamos deshabilitarlo si no tiene saldo)
+                console.log("Puesto encontrado:", data.puesto.nombre);
+            } else {
+                document.getElementById('saldoDisplay').innerText = "Sin Puesto";
+                document.getElementById('btnCheckIn').disabled = true; // Bloqueamos el botón
+                alert("No tienes un puesto activo asignado.");
+            }
+        } catch (error) {
+            console.error(error);
+            document.getElementById('saldoDisplay').innerText = "Error";
+        }
+    }
+
+    // 5. Lógica del Botón Check-in (Ahora sí real) ✅
+    document.getElementById('btnCheckIn').addEventListener('click', async () => {
+        const mensaje = document.getElementById('mensajeResultado');
+        
+        if (!miPuestoId) {
+            mensaje.innerText = "Error: No se identificó tu puesto.";
+            return;
+        }
+
+        mensaje.innerText = "Procesando...";
+        mensaje.className = "mt-3 text-center text-warning";
+
+        try {
+            const response = await fetch('http://localhost:3000/api/operaciones/check-in', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ 
+                    puestoId: miPuestoId, // ¡Ahora sí enviamos el ID correcto!
+                    usuarioId: usuario.id, // Por si acaso el backend lo pide
+                    fecha: new Date().toISOString().split('T')[0] // Fecha de hoy (YYYY-MM-DD)
+                })
+            });
+
+            const resultado = await response.json();
+
+            if(response.ok) {
+                mensaje.innerText = "¡Check-in Exitoso! ✅";
+                mensaje.className = "mt-3 text-center text-success";
+                
+                // Recargamos el saldo para ver cómo bajó
+                cargarDatosPuesto(); 
+            } else {
+                mensaje.innerText = "Error: " + (resultado.error || "Falló el registro");
+                mensaje.className = "mt-3 text-center text-danger";
+            }
+
+        } catch (error) {
+            mensaje.innerText = "Error de conexión";
+            mensaje.className = "mt-3 text-center text-danger";
+        }
+    });
+
+    // Iniciamos la carga de datos apenas entramos
+    cargarDatosPuesto();
+
+</script>
+</body>
+</html>

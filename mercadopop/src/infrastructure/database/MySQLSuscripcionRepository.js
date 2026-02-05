@@ -1,5 +1,6 @@
 import SuscripcionModel from './models/sequelize/SuscripcionModel.js';
 import { Suscripcion } from '../../domain/entities/Suscripcion.js';
+import PuestoModel from './models/sequelize/PuestoModel.js';
 
 export class MySQLSuscripcionRepository {
 
@@ -65,5 +66,34 @@ export class MySQLSuscripcionRepository {
         
         // Devolvemos la versión actualizada
         return await this.findById(suscripcion.id);
+    }
+    async findByUsuarioId(usuarioId) {
+        // 1. Buscamos la suscripción activa
+        const suscripcion = await SuscripcionModel.findOne({
+            where: { 
+                usuarioId: usuarioId,
+                activa: 1 
+            }
+        });
+
+        // Si no hay suscripción, no seguimos
+        if (!suscripcion) return null;
+
+        // 2. AQUÍ ESTÁ EL TRUCO: Buscamos el puesto usando la relación que ya tienes en la tabla 'puestos'
+        // Buscamos donde 'usuario_titular_id' sea igual a nuestro usuario
+        const puesto = await PuestoModel.findOne({
+            where: { usuarioTitularId: usuarioId }
+        });
+
+        // 3. Convertimos a objeto simple
+        const datosSuscripcion = suscripcion.toJSON();
+
+        // 4. Si encontramos el puesto, se lo "pegamos" a la respuesta
+        if (puesto) {
+            datosSuscripcion.puesto = puesto.toJSON(); // Aquí va el nombre, numero (TEST-5), etc.
+            datosSuscripcion.puestoId = puesto.id;     // ¡Esto es lo que necesita el botón de Check-in!
+        }
+
+        return datosSuscripcion;
     }
 }
