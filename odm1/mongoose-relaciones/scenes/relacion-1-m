@@ -1,0 +1,44 @@
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+
+// --- DEFINICIÓN DE SCHEMAS ---
+// Definimos los modelos aquí mismo para mantener el ejemplo autocontenido
+const BookSchema = new Schema({
+    title: String,
+    pages: Number
+});
+
+const AuthorSchema = new Schema({
+    name: String,
+    // 1:N -> Un autor tiene un array de referencias a libros
+    books: [{ type: Schema.Types.ObjectId, ref: 'Book' }]
+});
+
+// Evitamos error de recompilación si el modelo ya existe
+const Book = mongoose.models.Book || model('Book', BookSchema);
+const Author = mongoose.models.Author || model('Author', AuthorSchema);
+
+// --- LÓGICA ---
+async function runOneToMany() {
+    console.log('\n--- Ejecutando Relación 1:N (Autor -> Libros) ---');
+
+    // 1. Crear Libros
+    const book1 = await Book.create({ title: "Node.js Avanzado", pages: 300 });
+    const book2 = await Book.create({ title: "MongoDB Expert", pages: 500 });
+
+    // 2. Crear Autor asignando los IDs de los libros
+    const author = await Author.create({
+        name: "Maria Code",
+        books: [book1._id, book2._id]
+    });
+
+    // 3. Consultar con Populate
+    const result = await Author.findOne({ name: "Maria Code" }).populate('books');
+    
+    console.log("Autor:", result.name);
+    console.log("Libros del autor:");
+    result.books.forEach(b => console.log(` - ${b.title} (${b.pages} págs)`));
+}
+
+// Exportamos la función para usarla en index.js
+module.exports = runOneToMany;
