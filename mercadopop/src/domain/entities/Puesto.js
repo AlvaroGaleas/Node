@@ -1,9 +1,9 @@
 export class Puesto {
     constructor(id, numero, ubicacion, estado = 'LIBRE', usuarioTitularId = null) {
         this.id = id;
-        this.numero = numero;       // Ej: "Lote A-12"
-        this.ubicacion = ubicacion; // Ej: "Pasillo Central"
-        this.estado = estado;       // LIBRE, OCUPADO, MANTENIMIENTO
+        this.numero = numero;      
+        this.ubicacion = ubicacion; 
+        this.estado = estado;       
         this.usuarioTitularId = usuarioTitularId;
     }
 

@@ -7,17 +7,15 @@ export class PuestoService {
 
     // CREATE
     async crearPuesto(datos) {
-        // Asegúrate de pasar todos los datos al constructor de la entidad
-        // OJO: El orden de los parámetros depende de tu entidad Puesto.js
         const puesto = new Puesto(
             null, 
             datos.numero, 
             datos.ubicacion, 
             datos.estado,
-            datos.usuarioTitularId // <--- Importante pasar esto
+            datos.usuarioTitularId 
         );
 
-        // AQUÍ ESTÁ EL ERROR COMÚN: Faltaba el 'return'
+    
         return await this.puestoRepository.save(puesto); 
     }
 

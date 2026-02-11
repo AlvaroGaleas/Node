@@ -23,7 +23,7 @@ export class OperacionService {
         return await this.mongoOperacionRepository.inicializarDia(fecha, listaParaMongo);
     }
 
-    // --- CHECK-IN TITULAR ---
+    // CHECK-IN TITULAR
     async realizarCheckInTitular(puestoIdMysql, fecha = new Date()) {
         // 1. Buscamos el registro en MongoDB para ese puesto hoy
         const operacion = await this.mongoOperacionRepository.buscarPorPuestoYFecha(puestoIdMysql, fecha);
@@ -137,7 +137,7 @@ export class OperacionService {
                     monto: monto
                 });
             } else {
-                reporte.ocupacion.vacios++; // ESPERANDO_CHECKIN o LIBERADO_AUSENCIA
+                reporte.ocupacion.vacios++;
             }
         });
 

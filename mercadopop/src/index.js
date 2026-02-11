@@ -38,7 +38,7 @@ app.use(cors());
 app.use(express.json());
 
 
-//INYECCIÓN DE DEPENDENCIAS (EL ARMADO)
+//INYECCIÓN DE DEPENDENCIAS 
 
 // 1. Repositorios (Capa de Datos)
 const puestoRepo = new MySQLPuestoRepository();
