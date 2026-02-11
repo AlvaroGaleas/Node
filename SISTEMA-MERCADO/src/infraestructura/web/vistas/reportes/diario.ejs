@@ -1,0 +1,104 @@
+<%- include('../layouts/main') -%>
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">Reporte Diario - <%= new Date(diaMercado.fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></h4>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total Recaudado</h5>
+                        <h3>$<%= totalRecaudado.toFixed(2) %></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Puestos Ocupados</h5>
+                        <h3><%= puestosOcupados %></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Puestos Libres</h5>
+                        <h3><%= puestosLibres %></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Tasa Ocupación</h5>
+                        <h3><%= ((puestosOcupados / (puestosOcupados + puestosLibres)) * 100).toFixed(1) %>%</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h5>Detalle de Puestos</h5>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Puesto</th>
+                        <th>Estado</th>
+                        <th>Arrendatario</th>
+                        <th>Contacto</th>
+                        <th>Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% detallesPuestos.forEach(puesto => { %>
+                        <tr>
+                            <td><%= puesto.numero_puesto %></td>
+                            <td>
+                                <% if (puesto.ocupado) { %>
+                                    <span class="badge bg-danger">Ocupado</span>
+                                <% } else { %>
+                                    <span class="badge bg-success">Libre</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (puesto.ocupado) { %>
+                                    <%= puesto.nombre %> <%= puesto.apellido %>
+                                <% } else { %>
+                                    -
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (puesto.ocupado && puesto.telefono) { %>
+                                    <%= puesto.telefono %>
+                                <% } else { %>
+                                    -
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (puesto.ocupado && puesto.pagado) { %>
+                                    <span class="badge bg-success">Pagado $3</span>
+                                <% } else if (puesto.ocupado) { %>
+                                    <span class="badge bg-warning">Pendiente</span>
+                                <% } else { %>
+                                    -
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-3">
+            <a href="/mercado/iniciar-dia" class="btn btn-primary">
+                <i class="bi bi-calendar-plus"></i> Nuevo Día
+            </a>
+            <a href="/reportes/historico" class="btn btn-secondary">
+                <i class="bi bi-clock-history"></i> Ver Histórico
+            </a>
+        </div>
+    </div>
+</div>

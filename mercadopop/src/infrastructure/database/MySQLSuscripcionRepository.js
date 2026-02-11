@@ -67,33 +67,41 @@ export class MySQLSuscripcionRepository {
         // Devolvemos la versión actualizada
         return await this.findById(suscripcion.id);
     }
+    // Asegúrate de tener esto arriba: import PuestoModel from './models/sequelize/PuestoModel.js';
+
     async findByUsuarioId(usuarioId) {
-        // 1. Buscamos la suscripción activa
+        // PASO A: Buscamos la suscripción activa (Corregimos 'estado' por 'activa')
         const suscripcion = await SuscripcionModel.findOne({
             where: { 
                 usuarioId: usuarioId,
-                activa: 1 
+                activa: 1  // <--- ¡CORREGIDO! Usamos el nombre real de la columna en MySQL
             }
         });
 
-        // Si no hay suscripción, no seguimos
+        // Si no tiene plan activo, retornamos null
         if (!suscripcion) return null;
 
-        // 2. AQUÍ ESTÁ EL TRUCO: Buscamos el puesto usando la relación que ya tienes en la tabla 'puestos'
-        // Buscamos donde 'usuario_titular_id' sea igual a nuestro usuario
+        // PASO B: Buscamos el Puesto en la tabla correcta ('puestos')
+        // Buscamos qué puesto tiene a este usuario como titular
         const puesto = await PuestoModel.findOne({
             where: { usuarioTitularId: usuarioId }
         });
 
-        // 3. Convertimos a objeto simple
-        const datosSuscripcion = suscripcion.toJSON();
+        // PASO C: Unimos los datos manualmente
+        const datos = suscripcion.toJSON();
 
-        // 4. Si encontramos el puesto, se lo "pegamos" a la respuesta
+        // Si encontramos puesto, se lo agregamos a la respuesta
         if (puesto) {
-            datosSuscripcion.puesto = puesto.toJSON(); // Aquí va el nombre, numero (TEST-5), etc.
-            datosSuscripcion.puestoId = puesto.id;     // ¡Esto es lo que necesita el botón de Check-in!
+            datos.puesto = puesto.toJSON();
+            datos.puestoId = puesto.id; // <--- ¡Esto activará el botón en el Frontend!
         }
 
-        return datosSuscripcion;
+        // PASO D: Calculamos el Saldo
+        // (4 créditos totales - 0 usados = 4 restantes)
+        const total = datos.creditosTotales || datos.creditos_totales || 0;
+        const usados = datos.creditosUsados || datos.creditos_usados || 0;
+        datos.creditosRestantes = total - usados;
+
+        return datos;
     }
 }

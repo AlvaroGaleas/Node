@@ -1,0 +1,114 @@
+<%- include('../layouts/main', { scripts: ['/js/mercado.js'] }) -%>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Gestionar Mercado - <%= diaMercado.fecha %></h4>
+                <span class="badge bg-<%= diaMercado.estado === 'activo' ? 'success' : 'warning' %>">
+                    <%= diaMercado.estado.toUpperCase() %>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row" id="grid-puestos">
+                    <% for (let i = 1; i <= administrador.totalPuestos; i++) { 
+                        const alquiler = alquileres.find(a => a.numeroPuesto === i);
+                        let clase = 'puesto-libre';
+                        let texto = 'Libre';
+                        let info = '';
+                        
+                        if (alquiler) {
+                            if (alquiler.pagado) {
+                                clase = 'puesto-pagado';
+                                texto = 'Pagado';
+                            } else {
+                                clase = 'puesto-ocupado';
+                                texto = 'Ocupado';
+                            }
+                            info = `${alquiler.nombre} ${alquiler.apellido}`;
+                        }
+                    %>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 puesto-card <%= clase %>">
+                                <div class="card-body">
+                                    <h5 class="card-title">Puesto <%= i %></h5>
+                                    <p class="card-text">
+                                        <strong><%= texto %></strong><br>
+                                        <% if (info) { %>
+                                            <%= info %><br>
+                                            <% if (alquiler.telefono) { %>
+                                                <small><%= alquiler.telefono %></small>
+                                            <% } %>
+                                        <% } %>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <% if (!alquiler) { %>
+                                        <a href="/mercado/alquilar-puesto/<%= diaMercado.id %>?numero_puesto=<%= i %>" 
+                                           class="btn btn-sm btn-success w-100">
+                                            Alquilar
+                                        </a>
+                                    <% } else if (!alquiler.pagado) { %>
+                                        <span class="badge bg-warning">Pendiente pago</span>
+                                    <% } else { %>
+                                        <span class="badge bg-success">Pagado $3</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Resumen del Día</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Total Puestos:</strong> <%= administrador.totalPuestos %></p>
+                <p><strong>Ocupados:</strong> <%= alquileres.length %></p>
+                <p><strong>Disponibles:</strong> <%= puestosDisponibles.length %></p>
+                <p><strong>Recaudación:</strong> $<%= totalRecaudado.toFixed(2) %></p>
+                <p><strong>Pendiente por cobrar:</strong> $<%= ((alquileres.length * 3) - totalRecaudado).toFixed(2) %></p>
+                
+                <% if (diaMercado.estado === 'pendiente') { %>
+                    <form method="POST" action="/mercado/iniciar-dia">
+                        <input type="hidden" name="fecha" value="<%= diaMercado.fecha %>">
+                        <button type="submit" class="btn btn-success w-100">Activar Mercado</button>
+                    </form>
+                <% } else if (diaMercado.estado === 'activo') { %>
+                    <a href="/reportes/generar/<%= diaMercado.id %>" class="btn btn-danger w-100">
+                        Cerrar Día y Generar Reporte
+                    </a>
+                <% } else { %>
+                    <a href="/reportes/diario/<%= diaMercado.id %>" class="btn btn-info w-100">
+                        Ver Reporte
+                    </a>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Puestos Disponibles</h5>
+            </div>
+            <div class="card-body">
+                <% if (puestosDisponibles.length > 0) { %>
+                    <div class="list-group">
+                        <% puestosDisponibles.forEach(puesto => { %>
+                            <a href="/mercado/alquilar-puesto/<%= diaMercado.id %>?numero_puesto=<%= puesto %>" 
+                               class="list-group-item list-group-item-action">
+                                Puesto <%= puesto %> - Alquilar
+                            </a>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p class="text-center text-muted">No hay puestos disponibles</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

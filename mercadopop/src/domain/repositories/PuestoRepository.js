@@ -1,5 +1,4 @@
-// Este archivo es un "Contrato".
-// No tiene código real, solo define qué operaciones necesitamos.
+
 
 export class PuestoRepository {
     

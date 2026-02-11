@@ -16,33 +16,35 @@ export function crearOperacionRouter(operacionController) {
         operacionController.abrirDia
     );
     /**
-     * @swagger
-     * /operaciones/check-in:
-     * post:
-     * summary: Realizar Check-in de un titular
-     * tags: [Operaciones]
-     * requestBody:
-     * required: true
-     * content:
-     * application/json:
-     * schema:
-     * type: object
-     * required:
-     * - puestoId
-     * properties:
-     * puestoId:
-     * type: integer
-     * description: ID del puesto en MySQL
-     * fecha:
-     * type: string
-     * format: date
-     * description: Fecha de operación (YYYY-MM-DD)
-     * responses:
-     * 200:
-     * description: Check-in exitoso
-     * 400:
-     * description: Error de validación o falta de saldo
-     */
+   * @swagger
+   * /operaciones/check-in:
+   * post:
+   * summary: Realizar Check-in de un titular
+   * tags: [Operaciones]
+   * requestBody:
+   * required: true
+   * content:
+   * application/json:
+   * schema:
+   * type: object
+   * required:
+   * - puestoId
+   * properties:
+   * puestoId:
+   * type: integer
+   * description: ID del puesto en MySQL
+   * fecha:
+   * type: string
+   * format: date
+   * description: Fecha de operación (YYYY-MM-DD)
+   * responses:
+   * 200:
+   * description: Check-in exitoso
+   * 400:
+   * description: Error de validación o falta de saldo
+   */
+
+
     // Check-in (Validar puestoId)
     router.post(
         '/check-in', 

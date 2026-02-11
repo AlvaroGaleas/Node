@@ -1,0 +1,39 @@
+<%- include('../layouts/main') -%>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Registro de Administrador</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/admin/registro">
+                    <div class="mb-3">
+                        <label for="nombre_usuario" class="form-label">Nombre de Usuario</label>
+                        <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" 
+                               value="<%= datos ? datos.nombre_usuario : '' %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="<%= datos ? datos.email : '' %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="total_puestos" class="form-label">Número de Puestos</label>
+                        <input type="number" class="form-control" id="total_puestos" name="total_puestos" 
+                               value="<%= datos ? datos.total_puestos : '' %>" min="1" required>
+                        <div class="form-text">Cantidad total de puestos disponibles en su terreno.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="/admin/login">¿Ya tienes cuenta? Inicia sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
