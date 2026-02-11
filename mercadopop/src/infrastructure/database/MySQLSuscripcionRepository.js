@@ -49,7 +49,7 @@ export class MySQLSuscripcionRepository {
 
     
     async findActiveByUserId(usuarioId) {
-    console.log('--- BUSCANDO SUSCRIPCIÓN ACTIVA ---'); // <--- Agrega esto
+    console.log('--- BUSCANDO SUSCRIPCIÓN ACTIVA ---');
     const sub = await SuscripcionModel.findOne({
         where: { usuarioId: usuarioId, activa: true }
     });
@@ -67,37 +67,35 @@ export class MySQLSuscripcionRepository {
         // Devolvemos la versión actualizada
         return await this.findById(suscripcion.id);
     }
-    // Asegúrate de tener esto arriba: import PuestoModel from './models/sequelize/PuestoModel.js';
+
 
     async findByUsuarioId(usuarioId) {
-        // PASO A: Buscamos la suscripción activa (Corregimos 'estado' por 'activa')
+        //Buscamos la suscripción activa 
         const suscripcion = await SuscripcionModel.findOne({
             where: { 
                 usuarioId: usuarioId,
-                activa: 1  // <--- ¡CORREGIDO! Usamos el nombre real de la columna en MySQL
+                activa: 1  //
             }
         });
 
         // Si no tiene plan activo, retornamos null
         if (!suscripcion) return null;
 
-        // PASO B: Buscamos el Puesto en la tabla correcta ('puestos')
         // Buscamos qué puesto tiene a este usuario como titular
         const puesto = await PuestoModel.findOne({
             where: { usuarioTitularId: usuarioId }
         });
 
-        // PASO C: Unimos los datos manualmente
+        //Unimos los datos manualmente
         const datos = suscripcion.toJSON();
 
-        // Si encontramos puesto, se lo agregamos a la respuesta
+  
         if (puesto) {
             datos.puesto = puesto.toJSON();
-            datos.puestoId = puesto.id; // <--- ¡Esto activará el botón en el Frontend!
+            datos.puestoId = puesto.id;
         }
 
-        // PASO D: Calculamos el Saldo
-        // (4 créditos totales - 0 usados = 4 restantes)
+        // 4 créditos totales - 0 usados = 4 restantes
         const total = datos.creditosTotales || datos.creditos_totales || 0;
         const usados = datos.creditosUsados || datos.creditos_usados || 0;
         datos.creditosRestantes = total - usados;

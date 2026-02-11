@@ -2,7 +2,7 @@ import { OperacionDiariaModel } from './models/OperacionDiariaModel.js';
 
 export class MongoOperacionRepository {
 
-    // 1. Iniciar el día: Recibe una lista de puestos y usuarios de MySQL
+    //Recibe una lista de puestos y usuarios de MySQL
     // y crea los documentos en Mongo.
     async inicializarDia(fecha, listaPuestosConUsuario) {
         const operaciones = listaPuestosConUsuario.map(item => ({
@@ -20,7 +20,7 @@ export class MongoOperacionRepository {
             estado: 'ESPERANDO_CHECKIN'
         }));
 
-        // ordered: false permite que si uno falla (ej: duplicado), los demás sigan
+        // ordered: false permite que si uno falla los demás sigan
         try {
             return await OperacionDiariaModel.insertMany(operaciones, { ordered: false });
         } catch (error) {
@@ -33,9 +33,9 @@ export class MongoOperacionRepository {
         }
     }
 
-    // 2. Buscar por Puesto y Fecha
+    //Buscar por Puesto y Fecha
     async buscarPorPuestoYFecha(puestoId, fecha) {
-        // Usamos inicio y fin del día para asegurar la búsqueda
+        //Usamos inicio y fin del día para asegurar la búsqueda
         const inicioDia = new Date(fecha); inicioDia.setHours(0,0,0,0);
         const finDia = new Date(fecha); finDia.setHours(23,59,59,999);
 
@@ -45,7 +45,7 @@ export class MongoOperacionRepository {
         });
     }
 
-    // Modifica este método para recibir un cuarto parámetro opcional "datosExtra"
+    //Modifica este método para recibir un cuarto parámetro opcional "datosExtra"
     async actualizarEstado(idMongo, nuevoEstado, datosCheckIn = null, datosExtra = null) {
         const update = { estado: nuevoEstado };
         if (datosCheckIn) update.checkIn = datosCheckIn;

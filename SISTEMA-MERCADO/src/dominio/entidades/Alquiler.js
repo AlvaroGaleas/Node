@@ -17,7 +17,7 @@ class Alquiler {
     }
 
     calcularCosto() {
-        return 3; // Costo fijo por día
+        return 3;
     }
 
     marcarComoPagado() {

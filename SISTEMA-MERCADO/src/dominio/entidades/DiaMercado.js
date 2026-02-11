@@ -3,14 +3,14 @@ class DiaMercado {
         this.id = id;
         this.administradorId = administradorId;
         this.fecha = fecha;
-        this.estado = estado; // 'pendiente', 'activo', 'cerrado'
+        this.estado = estado;
         this.totalRecaudado = totalRecaudado || 0;
         this.fechaCreacion = fechaCreacion;
     }
 
     esViernes() {
         const dia = new Date(this.fecha).getDay();
-        return dia === 5; // 5 = viernes
+        return dia === 5;
     }
 
     puedeIniciar() {

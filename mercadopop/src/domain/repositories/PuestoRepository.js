@@ -17,7 +17,7 @@ export class PuestoRepository {
         throw new Error('Método findAll() no implementado');
     }
 
-    // Método para buscar puestos por estado (ej: 'LIBRE')
+    // Método para buscar puestos por estado
     async findByEstado(estado) {
         throw new Error('Método findByEstado() no implementado');
     }

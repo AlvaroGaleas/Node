@@ -1,5 +1,5 @@
 import express from 'express';
-// 1. IMPORTAR VALIDATORS
+//IMPORTAR VALIDATORS
 import { body } from 'express-validator';
 import { validarCampos } from '../middlewares/validationMiddleware.js';
 
@@ -27,21 +27,15 @@ export function crearOperacionRouter(operacionController) {
    * application/json:
    * schema:
    * type: object
-   * required:
-   * - puestoId
    * properties:
    * puestoId:
    * type: integer
    * description: ID del puesto en MySQL
    * fecha:
-   * type: string
    * format: date
-   * description: Fecha de operación (YYYY-MM-DD)
    * responses:
    * 200:
-   * description: Check-in exitoso
    * 400:
-   * description: Error de validación o falta de saldo
    */
 
 
@@ -77,7 +71,7 @@ export function crearOperacionRouter(operacionController) {
         operacionController.alquilarExterno
     );
 
-    // otras rutas (GET reporte, POST ausencia, etc.
+    // otras rutas GET reporte, POST ausencia, etc.
     router.post('/ausencia', operacionController.registrarAusencia);
     router.get('/reporte', operacionController.obtenerReporte);
 

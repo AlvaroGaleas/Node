@@ -26,12 +26,12 @@ const OperacionDiariaSchema = new mongoose.Schema({
     },
     ocupanteAnonimo: { 
         nombre: String,
-        montoCobrado: Number // Aquí guardamos los $3.50 si se arrendó a otro
+        montoCobrado: Number // Aquí guardamos los $3.50
     },
-    incidencias: [String] // Lista de notas ("Llegó tarde", "Puesto sucio")
+    incidencias: [String] // Lista de notas 
 });
 
-// ÍNDICE COMPUESTO (Regla de Oro): 
+
 // Evita que se dupliquen registros para el mismo puesto en la misma fecha.
 OperacionDiariaSchema.index({ fecha: 1, "puesto.idMysql": 1 }, { unique: true });
 

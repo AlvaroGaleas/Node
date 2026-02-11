@@ -20,10 +20,10 @@ const PuestoModel = sequelize.define('Puesto', {
         type: DataTypes.ENUM('LIBRE', 'OCUPADO', 'MANTENIMIENTO'),
         defaultValue: 'LIBRE'
     },
-    // Definimos explícitamente la FK para que Sequelize no invente nombres raros
+    // Definimos explícitamente la FK
     usuarioTitularId: {
         type: DataTypes.INTEGER,
-        field: 'usuario_titular_id', // Nombre real en la BD (snake_case)
+        field: 'usuario_titular_id', // Nombre real en la BD
         allowNull: true
     }
 }, {

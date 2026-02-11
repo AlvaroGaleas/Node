@@ -18,7 +18,7 @@ const options = {
       },
     ],
   },
-  // Aquí le decimos: "Busca comentarios en todos los archivos de rutas"
+  //Busca comentarios en todos los archivos de rutas
   apis: ['./src/infrastructure/routes/*.js'], 
 };
 

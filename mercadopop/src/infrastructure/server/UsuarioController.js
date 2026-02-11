@@ -24,7 +24,6 @@ export class UsuarioController {
     obtenerPorId = async (req, res) => {
         try {
             const { id } = req.params;
-            // Fíjate que aquí llamamos al nombre nuevo que acabamos de poner en el servicio
             const usuario = await this.usuarioService.obtenerUsuarioPorId(id);
             res.json(usuario);
         } catch (error) {
@@ -61,7 +60,7 @@ export class UsuarioController {
             
             res.status(200).json(resultado);
         } catch (error) {
-            // Devolvemos 401 (Unauthorized) si falla
+            // Devolvemos 401 si falla
             res.status(401).json({ error: error.message });
         }
     }

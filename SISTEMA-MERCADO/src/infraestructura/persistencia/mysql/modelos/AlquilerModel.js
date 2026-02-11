@@ -1,3 +1,4 @@
+// src/infraestructura/persistencia/mysql/modelos/AlquilerModel.js
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
@@ -52,12 +53,14 @@ const AlquilerModel = sequelize.define('Alquiler', {
     timestamps: true,
     createdAt: 'fecha_creacion',
     updatedAt: false,
-});
-
-// Índice único para evitar duplicados de puestos en el mismo día
-AlquilerModel.addIndex('unique_puesto_dia', {
-    fields: ['dia_mercado_id', 'numero_puesto'],
-    unique: true,
+    // ✅ Índice único definido aquí
+    indexes: [
+        {
+            unique: true,
+            fields: ['dia_mercado_id', 'numero_puesto'],
+            name: 'unique_puesto_dia'
+        }
+    ]
 });
 
 module.exports = AlquilerModel;

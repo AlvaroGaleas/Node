@@ -1,5 +1,4 @@
 import express from 'express';
-// Nota: Importamos las clases, no las instancias. Las inyectaremos en el index.
 
 export function crearPuestoRouter(puestoController) {
     const router = express.Router();

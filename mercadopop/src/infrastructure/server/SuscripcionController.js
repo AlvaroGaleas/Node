@@ -37,8 +37,6 @@ export class SuscripcionController {
             const resultado = await this.suscripcionService.realizarCheckIn(usuarioId);
             res.json(resultado);
         } catch (error) {
-            // Si dice que no tiene saldo, es un 402 (Payment Required) o 409 (Conflict)
-            // Usaremos 400
             res.status(400).json({ error: error.message });
         }
     }

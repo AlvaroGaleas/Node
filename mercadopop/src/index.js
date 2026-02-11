@@ -37,37 +37,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ==========================================
-// 💉 INYECCIÓN DE DEPENDENCIAS (EL ARMADO)
-// ==========================================
+
+//INYECCIÓN DE DEPENDENCIAS (EL ARMADO)
 
 // 1. Repositorios (Capa de Datos)
 const puestoRepo = new MySQLPuestoRepository();
 const usuarioRepo = new MySQLUsuarioRepository();
-const suscripcionRepo = new MySQLSuscripcionRepository(); // <--- Aquí estaba el riesgo
+const suscripcionRepo = new MySQLSuscripcionRepository(); 
 const operacionRepo = new MongoOperacionRepository();
 
 // 2. Servicios (Capa de Lógica)
-// Nota: SuscripcionService necesita usuarioRepo para validar usuarios
 const puestoService = new PuestoService(puestoRepo);
 const usuarioService = new UsuarioService(usuarioRepo);
 const suscripcionService = new SuscripcionService(suscripcionRepo, usuarioRepo); 
 const operacionService = new OperacionService(
-    puestoRepo,       // <--- Antes tenías 'puestoRepository' (Error)
-    operacionRepo,    // <--- Antes tenías 'mongoOperacionRepository' (Error)
-    suscripcionService, // Este sí está bien
-    usuarioRepo       // <--- Antes tenías 'usuarioRepository' (Error)
+    puestoRepo,       
+    operacionRepo,    
+    suscripcionService, 
+    usuarioRepo       
 );
 
-// 3. Controladores (Capa de Entrada)
+//Controladores (Capa de Entrada)
 const puestoController = new PuestoController(puestoService);
 const usuarioController = new UsuarioController(usuarioService);
 const suscripcionController = new SuscripcionController(suscripcionService);
 const operacionController = new OperacionController(operacionService);
 
-// ==========================================
-// 🛣️ RUTAS
-// ==========================================
+// RUTAS
+
 app.use('/api/puestos', crearPuestoRouter(puestoController));
 app.use('/api/usuarios', crearUsuarioRouter(usuarioController));
 app.use('/api/suscripciones', crearSuscripcionRouter(suscripcionController));
@@ -76,21 +73,19 @@ app.use('/api/operaciones', crearOperacionRouter(operacionController));
 // Documentación
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-// ==========================================
-// 🚀 ARRANQUE
-// ==========================================
+
 const startServer = async () => {
     try {
-        console.log('⏳ Conectando bases de datos...');
+        console.log('Conectando bases de datos...');
         await connectMySQL();
         await connectMongoDB();
         
         const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => {
-            console.log(`✅ Servidor MercadoPop activo en http://localhost:${PORT}`);
+            console.log(`Servidor MercadoPop activo en http://localhost:${PORT}`);
         });
     } catch (error) {
-        console.error('❌ Error fatal:', error);
+        console.error('Error fatal:', error);
     }
 };
 

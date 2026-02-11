@@ -27,7 +27,7 @@ const UsuarioModel = sequelize.define('Usuario', {
     }
 }, {
     tableName: 'usuarios', // Nombre real de la tabla en MySQL
-    timestamps: false      // Si no usas createdAt/updatedAt
+    timestamps: false      
 });
 
 export default UsuarioModel;

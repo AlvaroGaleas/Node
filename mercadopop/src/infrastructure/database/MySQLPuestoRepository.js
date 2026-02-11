@@ -3,10 +3,9 @@ import { Puesto } from '../../domain/entities/Puesto.js';
 
 export class MySQLPuestoRepository {
 
-    // Helper para convertir de Sequelize -> Dominio
+    // Helper para convertir de Sequelize - Dominio
     _toDomain(data) {
         if (!data) return null;
-        // data.toJSON() limpia el objeto de cosas internas de Sequelize
         const json = data.toJSON ? data.toJSON() : data; 
         return new Puesto(
             json.id, 
